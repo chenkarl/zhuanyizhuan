@@ -1,0 +1,6 @@
+{
+    "GaoDeKEY":"3359a3c371657d9589299e3c35a37dbd",
+    "amapApiHost":"https://restapi.amap.com",
+    "weatherInfoURL":"/v3/weather/weatherInfo?",
+    "polygonURL":"/v3/place/polygon?"
+}
