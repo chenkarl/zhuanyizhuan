@@ -44,5 +44,5 @@ func GetCityCode(name string) (place string, err error) {
 			return place, err
 		}
 	}
-	return "", NewError("不存在该城市")
+	return "", NewError("不存在该城市：" + name)
 }
