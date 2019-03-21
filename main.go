@@ -12,11 +12,11 @@ import (
 )
 
 type PlaceWeather struct {
-	place   string
-	weather string
+	Place   string
+	Weather string
 }
 type PlaceWeatherArr struct {
-	placeweather []PlaceWeather
+	PlaceWeather []*PlaceWeather
 }
 
 var (
@@ -64,7 +64,7 @@ func (h *MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Fatalln(err)
 	}
 	// 获取列表内城市的天气信息
-	var pwArr []PlaceWeather
+	var pwArr []*PlaceWeather
 	for _, value := range city {
 		name := value.(map[string]interface{})["name"]
 		place, err := amap.GetCityCode(name.(string))
@@ -78,29 +78,21 @@ func (h *MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			log.Fatalln(err)
 			continue
 		}
-		var pw PlaceWeather
-		if !strings.Contains(info.(map[string]interface{})["weather"].(string), "雨") {
-			pw.place = name.(string)
-			pw.weather = info.(map[string]interface{})["weather"].(string)
-
-			// fmt.Fprint(w, "可", name, info)
-			// log.Println("可", name, info)
-		}
-		if strings.Contains(info.(map[string]interface{})["weather"].(string), "雨") {
-			pw.place = name.(string)
-			pw.weather = info.(map[string]interface{})["weather"].(string)
+		pw := &PlaceWeather{
+			Place:   name.(string),
+			Weather: info.(map[string]interface{})["weather"].(string),
 		}
 		pwArr = append(pwArr, pw)
 	}
+	pwA := &PlaceWeatherArr{
+		pwArr,
+	}
 	w.Header().Set("Content-Type", "application/json")
-	log.Println(pwArr)
-	j, err := json.Marshal(pwArr)
+	j, err := json.Marshal(pwA)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Println(string(j))
 	fmt.Fprint(w, string(j))
-	//w.Write(string(j))
 }
 func RunServer() {
 	handler := MyHandler{}
